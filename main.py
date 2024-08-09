@@ -4,17 +4,6 @@ from urllib.parse import urljoin
 import os
 from data_src import main
 
-# Get products data
-product_links = main()
-
-for cat, links in product_links.items():
-    # Directory to save downloaded images
-    download_dir = cat
-    os.makedirs(download_dir, exist_ok=True)
-
-    for prod in links:
-        print(prod)
-
 def fetch_html(url):
     """Fetches and returns the HTML content from the given URL."""
     response = requests.get(url)
@@ -83,32 +72,53 @@ def save_images(img_urls, download_dir):
             print(f'Failed to download {img_url}: {e}')
 
 
-def main():
-    url = 'https://www.lexington.com/ashbourne-panel-bed'
+def process_categories(product_links):
+    """Processes product links for all categories and saves data."""
     base_url = 'https://www.lexington.com'
-    download_dir = 'images'  # Specify your download directory
 
-    # Fetch and parse the HTML content
-    html_content = fetch_html(url)
-    soup = parse_html(html_content)
+    for cat, links in product_links.items():
+        # Create directory for each category
+        cat_dir = cat
+        os.makedirs(cat_dir, exist_ok=True)
 
-    # Extract information
-    img_urls = extract_images(soup, base_url)
-    img_urls = [img_url.replace('Small', 'Full') for img_url in img_urls]
-    dims = extract_text_by_class(soup, 'dimensions')
-    stock = extract_text_by_class(soup, 'avail')
-    sku = extract_text_by_class(soup, 'sku')
-    sizes_and_dims = extract_sizes_and_dimensions(soup)
+        for prod in links:
+            print(f'Processing: {prod}')
 
-    # Print the extracted information
-    print(f'Dimensions: {dims}')
-    print(f'Stock: {stock}')
-    print(f'SKU: {sku}')
-    for size_text, SKU, DIMS in sizes_and_dims:
-        print(f'{size_text}: SKU: {SKU}, DIMS: {DIMS}')
+            # Sanitize product name for directory
+            product_name = os.path.basename(prod).replace('/', '_').replace(':', '_').replace('?', '_')
+            product_dir = os.path.join(cat_dir, product_name)
+            os.makedirs(product_dir, exist_ok=True)
 
-    # Download and save images
-    save_images(img_urls, download_dir)
+            # Fetch and parse HTML
+            html_content = fetch_html(prod)
+            soup = parse_html(html_content)
+
+            # Extract product data
+            img_urls = extract_images(soup, base_url)
+            img_urls = [img_url.replace('Small', 'Full') for img_url in img_urls]
+            dims = extract_text_by_class(soup, 'dimensions')
+            stock = extract_text_by_class(soup, 'avail')
+            sku = extract_text_by_class(soup, 'sku')
+            sizes_and_dims = extract_sizes_and_dimensions(soup)
+
+            # Save product data
+            with open(os.path.join(product_dir, 'details.txt'), 'w') as f:
+                f.write(f"Dimensions: {dims}\n")
+                f.write(f"Stock: {stock}\n")
+                f.write(f"SKU: {sku}\n")
+                for size_text, SKU, DIMS in sizes_and_dims:
+                    f.write(f"{size_text}: SKU: {SKU}, DIMS: {DIMS}\n")
+
+            # Save images
+            save_images(img_urls, product_dir)
+
+
+def main():
+    # Assume this function returns a dictionary of product links by category
+    product_links = main()
+
+    # Process categories and products
+    process_categories(product_links)
 
 
 if __name__ == "__main__":
