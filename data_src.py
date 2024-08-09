@@ -26,6 +26,9 @@ fixed_hrefs = [room for room in hrefs if not '=' in room]
 # Create full links to sub-cat
 full_links = [urljoin(url, sub_cat_url) for sub_cat_url in fixed_hrefs]
 
+# Dict to store multi-cat with their list of links to products
+products_dict = {}
+
 # For every single sub-cat get products urls to individual list
 for sub_cat_link in full_links:
     # Send a request to fetch the HTML content
@@ -41,3 +44,9 @@ for sub_cat_link in full_links:
     find_products_selector = soup.find_all('div', class_='product-image')
     find_product_link = [product.find('a')['href'] for product in find_products_selector if product.find('a')]
     print(find_product_link)
+
+    # Adding a list of links to the dictionary under the appropriate key
+    products_dict[sub_cat_link] = find_product_link
+
+    # List of links for a given sub_cat_link
+    print(f"Links for {sub_cat_link}: {find_product_link}")
