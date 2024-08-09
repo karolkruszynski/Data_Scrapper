@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os
 
-def main():
+def get_product_links():
     # Base URL
     url = 'https://www.lexington.com/'
 

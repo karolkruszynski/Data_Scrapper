@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os
-from data_src import main
+from data_src import get_product_links
 
 def fetch_html(url):
     """Fetches and returns the HTML content from the given URL."""
@@ -115,7 +115,7 @@ def process_categories(product_links):
 
 def main():
     # Assume this function returns a dictionary of product links by category
-    product_links = main()
+    product_links = get_product_links()
 
     # Process categories and products
     process_categories(product_links)
