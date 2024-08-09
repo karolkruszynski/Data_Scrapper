@@ -19,4 +19,4 @@ soup = BeautifulSoup(response.text, 'html.parser')
 find_cat_by_room = [room for room in soup.find_all('li', class_='level_4')]
 
 hrefs = [room.find('a')['href'] for room in find_cat_by_room if room.find('a')]
-
+fixed_hrefs = [room for room in hrefs if not '=' in room]
