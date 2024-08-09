@@ -50,6 +50,38 @@ def extract_sizes_and_dimensions(soup):
             size_info.append((size_text, SKU, DIMS))
     return size_info
 
+def save_images(img_urls, download_dir):
+    """Downloads images from the given list of URLs and saves them to the specified directory."""
+    for img_url in img_urls:
+        try:
+            # Skip files with ext .webp
+            if img_url.lower().endswith('.webp'):
+                print(f'Skipping .webp file: {img_url}')
+                continue
+
+            # Fetch the image
+            img_response = requests.get(img_url)
+            img_response.raise_for_status()
+
+            # Process the image name
+            img_name = os.path.basename(img_url)
+            if not any(img_name.lower().endswith(ext) for ext in ['.jpg', '.jpeg', '.png']):
+                img_name += '.jpg'
+            else:
+                img_name = os.path.splitext(img_name)[0] + os.path.splitext(img_url)[1].lower()
+
+            # Create a full path for saving the image
+            img_path = os.path.join(download_dir, img_name)
+
+            # Write the image content to a file
+            with open(img_path, 'wb') as file:
+                file.write(img_response.content)
+
+            print(f'Downloaded: {img_url}')
+
+        except Exception as e:
+            print(f'Failed to download {img_url}: {e}')
+
 # Parse the HTML content using BeautifulSoup
 soup = BeautifulSoup(response.text, 'html.parser')
 
