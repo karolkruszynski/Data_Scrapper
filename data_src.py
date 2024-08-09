@@ -18,6 +18,5 @@ soup = BeautifulSoup(response.text, 'html.parser')
 
 find_cat_by_room = [room for room in soup.find_all('li', class_='level_4')]
 
-room_urls = []
-for url in find_cat_by_room:
+hrefs = [room.find('a')['href'] for room in find_cat_by_room if room.find('a')]
 
