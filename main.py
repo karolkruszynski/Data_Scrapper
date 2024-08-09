@@ -8,26 +8,24 @@ from data_src import main
 product_links = main()
 
 for cat, links in product_links.items():
-    print(cat)
+    # Directory to save downloaded images
+    download_dir = cat
+    os.makedirs(download_dir, exist_ok=True)
+
     for prod in links:
         print(prod)
 
-
-
-# Replace with the URL of the website you want to scrape
-url = 'https://www.lexington.com/ashbourne-panel-bed'
-base_url = 'https://www.lexington.com'
-
-# Directory to save downloaded images
-download_dir = 'downloaded_images'
-os.makedirs(download_dir, exist_ok=True)
-
-# Send a request to fetch the HTML content
-response = requests.get(url)
-try:
+def fetch_html(url):
+    """Fetches and returns the HTML content from the given URL."""
+    response = requests.get(url)
     response.raise_for_status()  # Check for request errors
-except Exception as e:
-    print(f'Failed to request: {e}')
+    return response.text
+
+def parse_html(html_content):
+    """Parses the HTML content using BeautifulSoup."""
+    return BeautifulSoup(html_content, 'html.parser')
+
+
 
 # Parse the HTML content using BeautifulSoup
 soup = BeautifulSoup(response.text, 'html.parser')
