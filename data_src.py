@@ -4,7 +4,6 @@ from urllib.parse import urljoin
 import os
 
 def main():
-
     # Base URL
     url = 'https://www.lexington.com/'
 
@@ -39,6 +38,7 @@ def main():
             response.raise_for_status()  # Check for request errors
         except Exception as e:
             print(f'Failed to request: {e}')
+            continue # If error exist
 
         # Parse the HTML content using BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -53,9 +53,9 @@ def main():
         # List of links for a given sub_cat_link
         print(f"Links for {sub_cat_link}: {find_product_link}")
 
-        return products_dict  # Return Data
+    return products_dict  # Return Data
 
     # Run def
-    if __name__ == "__main__":
-        final_products_dict = main()
-        print(final_products_dict)
+if __name__ == "__main__":
+    final_products_dict = main()
+    print(final_products_dict)
