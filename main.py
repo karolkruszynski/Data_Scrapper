@@ -25,7 +25,11 @@ def parse_html(html_content):
     """Parses the HTML content using BeautifulSoup."""
     return BeautifulSoup(html_content, 'html.parser')
 
-
+def extract_images(soup, base_url):
+    """Extracts image URLs from the parsed HTML that do not have alt attributes."""
+    img_tags = [img for img in soup.find_all('img') if not img.get('alt')]
+    img_urls = [urljoin(base_url, img['src']) for img in img_tags if 'src' in img.attrs]
+    return img_urls
 
 # Parse the HTML content using BeautifulSoup
 soup = BeautifulSoup(response.text, 'html.parser')
