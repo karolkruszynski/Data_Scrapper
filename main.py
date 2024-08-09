@@ -31,6 +31,11 @@ def extract_images(soup, base_url):
     img_urls = [urljoin(base_url, img['src']) for img in img_tags if 'src' in img.attrs]
     return img_urls
 
+def extract_text_by_class(soup, class_name):
+    """Extracts and returns the text of a specific span class."""
+    element = soup.find('span', class_=class_name)
+    return element.get_text(strip=True) if element else None
+
 # Parse the HTML content using BeautifulSoup
 soup = BeautifulSoup(response.text, 'html.parser')
 
