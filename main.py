@@ -36,6 +36,20 @@ def extract_text_by_class(soup, class_name):
     element = soup.find('span', class_=class_name)
     return element.get_text(strip=True) if element else None
 
+def extract_sizes_and_dimensions(soup):
+    """Extracts sizes and dimensions from h3 tags with the class 'showPrint'."""
+    sizes = soup.find_all('h3', class_='showPrint')
+    filtered_sizes = [h3 for h3 in sizes if 'first' not in h3.get('class', [])]
+    size_info = []
+    for h3 in filtered_sizes:
+        size_text = h3.contents[0].strip()
+        strong_tags = h3.find_all('strong')
+        if len(strong_tags) >= 2:
+            SKU = strong_tags[0].get_text(strip=True).replace('Item: ', '')
+            DIMS = strong_tags[1].get_text(strip=True).replace('Dimensions: ', '')
+            size_info.append((size_text, SKU, DIMS))
+    return size_info
+
 # Parse the HTML content using BeautifulSoup
 soup = BeautifulSoup(response.text, 'html.parser')
 
