@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os
+from data_src import main
 
 
 # Replace with the URL of the website you want to scrape
