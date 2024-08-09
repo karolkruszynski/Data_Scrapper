@@ -49,13 +49,13 @@ def main():
 
         find_products_selector = soup.find_all('div', class_='product-image')
         find_product_link = [product.find('a')['href'] for product in find_products_selector if product.find('a')]
-        print(find_product_link)
+        #print(find_product_link)
 
         # Adding a list of links to the dictionary under the appropriate key
         products_dict[item] = find_product_link
 
         # List of links for a given sub_cat_link
-        print(f"Links for {item}: {find_product_link}")
+        #print(f"Links for {item}: {find_product_link}")
         i += 1
 
     return products_dict  # Return Data
