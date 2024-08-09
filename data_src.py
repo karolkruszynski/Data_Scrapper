@@ -16,7 +16,10 @@ except Exception as e:
 # Parse the HTML content using BeautifulSoup
 soup = BeautifulSoup(response.text, 'html.parser')
 
+# Find Hrefs to category
 find_cat_by_room = [room for room in soup.find_all('li', class_='level_4')]
 
+# Hrefs to sub-category by room ( products inside it )
 hrefs = [room.find('a')['href'] for room in find_cat_by_room if room.find('a')]
 fixed_hrefs = [room for room in hrefs if not '=' in room]
+
