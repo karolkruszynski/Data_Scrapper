@@ -6,7 +6,7 @@ from data_src import get_product_links
 
 def fetch_html(url):
     """Fetches and returns the HTML content from the given URL."""
-    response = requests.get(url)
+    response = requests.get(url, timeout=30)
     response.raise_for_status()  # Check for request errors
     return response.text
 
@@ -90,6 +90,7 @@ def process_categories(product_links):
             os.makedirs(product_dir, exist_ok=True)
 
             # Fetch and parse HTML
+            prod = base_url+prod
             html_content = fetch_html(prod)
             soup = parse_html(html_content)
 
