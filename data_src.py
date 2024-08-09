@@ -55,7 +55,7 @@ def main():
         products_dict[item] = find_product_link
 
         # List of links for a given sub_cat_link
-        #print(f"Links for {item}: {find_product_link}")
+        print(f"Links for {item}: {find_product_link}")
         i += 1
 
     return products_dict  # Return Data
