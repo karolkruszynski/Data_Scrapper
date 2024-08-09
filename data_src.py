@@ -23,3 +23,5 @@ find_cat_by_room = [room for room in soup.find_all('li', class_='level_4')]
 hrefs = [room.find('a')['href'] for room in find_cat_by_room if room.find('a')]
 fixed_hrefs = [room for room in hrefs if not '=' in room]
 
+# Create full links to sub-cat
+full_links = [urljoin(url, sub_cat_url) for sub_cat_url in fixed_hrefs]
