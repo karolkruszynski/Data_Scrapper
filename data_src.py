@@ -37,7 +37,8 @@ def get_product_links():
         item = fixed_hrefs[i]
         item = item.replace('/', '')
         # Send a request to fetch the HTML content
-        response = requests.get(sub_cat_link)
+        #print(sub_cat_link)
+        response = requests.get(sub_cat_link, timeout=30)
         try:
             response.raise_for_status()  # Check for request errors
         except Exception as e:
@@ -62,5 +63,5 @@ def get_product_links():
 
     # Run def
 if __name__ == "__main__":
-    final_products_dict = main()
+    final_products_dict = get_product_links()
     print(final_products_dict)
