@@ -4,6 +4,9 @@ from urllib.parse import urljoin
 import os
 from data_src import main
 
+# Get products data
+product_links = main()
+
 
 # Replace with the URL of the website you want to scrape
 url = 'https://www.lexington.com/ashbourne-panel-bed'
