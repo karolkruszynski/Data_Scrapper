@@ -17,3 +17,7 @@ except Exception as e:
 soup = BeautifulSoup(response.text, 'html.parser')
 
 find_cat_by_room = [room for room in soup.find_all('li', class_='level_4')]
+
+room_urls = []
+for url in find_cat_by_room:
+
