@@ -7,8 +7,12 @@ from data_src import main
 # Get products data
 product_links = main()
 
-for prod in product_links['https://www.lexington.com/beds']:
-    print(prod)
+for cat, links in product_links.items():
+    print(cat)
+    for prod in links:
+        print(prod)
+
+
 
 # Replace with the URL of the website you want to scrape
 url = 'https://www.lexington.com/ashbourne-panel-bed'
