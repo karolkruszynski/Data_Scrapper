@@ -29,9 +29,13 @@ def main():
 
     # Dict to store multi-cat with their list of links to products
     products_dict = {}
+    i = 0
 
     # For every single sub-cat get products urls to individual list
     for sub_cat_link in full_links:
+        # Get name of category for key name in dict
+        item = fixed_hrefs[i]
+        item = item.replace('/', '')
         # Send a request to fetch the HTML content
         response = requests.get(sub_cat_link)
         try:
@@ -48,10 +52,11 @@ def main():
         print(find_product_link)
 
         # Adding a list of links to the dictionary under the appropriate key
-        products_dict[sub_cat_link] = find_product_link
+        products_dict[item] = find_product_link
 
         # List of links for a given sub_cat_link
-        print(f"Links for {sub_cat_link}: {find_product_link}")
+        print(f"Links for {item}: {find_product_link}")
+        i += 1
 
     return products_dict  # Return Data
 
