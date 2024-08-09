@@ -82,6 +82,38 @@ def save_images(img_urls, download_dir):
         except Exception as e:
             print(f'Failed to download {img_url}: {e}')
 
+
+def main():
+    url = 'https://www.lexington.com/ashbourne-panel-bed'
+    base_url = 'https://www.lexington.com'
+    download_dir = 'images'  # Specify your download directory
+
+    # Fetch and parse the HTML content
+    html_content = fetch_html(url)
+    soup = parse_html(html_content)
+
+    # Extract information
+    img_urls = extract_images(soup, base_url)
+    img_urls = [img_url.replace('Small', 'Full') for img_url in img_urls]
+    dims = extract_text_by_class(soup, 'dimensions')
+    stock = extract_text_by_class(soup, 'avail')
+    sku = extract_text_by_class(soup, 'sku')
+    sizes_and_dims = extract_sizes_and_dimensions(soup)
+
+    # Print the extracted information
+    print(f'Dimensions: {dims}')
+    print(f'Stock: {stock}')
+    print(f'SKU: {sku}')
+    for size_text, SKU, DIMS in sizes_and_dims:
+        print(f'{size_text}: SKU: {SKU}, DIMS: {DIMS}')
+
+    # Download and save images
+    save_images(img_urls, download_dir)
+
+
+if __name__ == "__main__":
+    main()
+
 # Parse the HTML content using BeautifulSoup
 soup = BeautifulSoup(response.text, 'html.parser')
 
