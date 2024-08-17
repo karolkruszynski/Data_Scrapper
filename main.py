@@ -42,12 +42,15 @@ def extract_sizes_and_dimensions(soup):
 def extra_dimensions(soup):
     """Extracts additional dimensions information like Arm Depth etc."""
     # Find all <span> tags, excluding those with class 'dimensions'
-    span_tags = [span for span in soup.find_all('span') if 'dimensions' not in span.get('class', [])]
-    extra_dims = []
-    # Print the text content of the filtered <span> tags
-    for span in span_tags:
-        extra_dims.append(span.get_text(strip=True))
-    return extra_dims
+    exact_smaller_elements = [div for div in soup.find_all('div', class_='smaller')]
+    # Znajdź wszystkie <strong> i <span> wewnątrz tych <div> - Flat List
+    strong_tags = [strong for div in exact_smaller_elements for strong in div.find_all('strong')]
+    span_tags = [span for div in exact_smaller_elements for span in div.find_all('span')]
+    full_data = {}
+    for key, value in zip(strong_tags, span_tags):
+        strip_key = key.get_text(strip=True)
+        full_data[strip_key] = value.get_text(strip=True)
+    return full_data
 
 def save_images(img_urls, download_dir):
     """Downloads images from the given list of URLs and saves them to the specified directory."""
@@ -121,6 +124,9 @@ def process_categories(product_links):
                 f.write(f"Extra Dimensions: {extra_dims}\n")
                 for size_text, SKU, DIMS in sizes_and_dims:
                     f.write(f"{size_text}: SKU: {SKU}, DIMS: {DIMS}\n")
+                for key, value in extra_dims.items():
+                    # Zapisz linię w formacie "klucz: wartość" do pliku
+                    f.write(f'{key}: {value}\n')
 
             # Save images
             save_images(img_urls, product_dir)
