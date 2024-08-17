@@ -17,22 +17,14 @@ def extra_dimensions(soup):
     """Extracts additional dimensions information like Arm Depth etc."""
     # Find all <span> tags, excluding those with class 'dimensions'
     exact_smaller_elements = [div for div in soup.find_all('div', class_='smaller')]
-    print(exact_smaller_elements)
     # Znajdź wszystkie <strong> i <span> wewnątrz tych <div> - Flat List
     strong_tags = [strong for div in exact_smaller_elements for strong in div.find_all('strong')]
     span_tags = [span for div in exact_smaller_elements for span in div.find_all('span')]
-    print(strong_tags)
-    print(span_tags)
     full_data = {}
     for key, value in zip(strong_tags, span_tags):
         strip_key = key.get_text(strip=True)
         full_data[strip_key] = value.get_text(strip=True)
-    print(full_data.values())
-
-    # Print the text content of the filtered <span> tags
-    #for span in span_tags:
-        #extra_dims.append(span)
-    #return extra_dims
+    return full_data
 
 def main():
     html_content = fetch_html("https://www.lexington.com/aidan-upholstered-arm-chair")
