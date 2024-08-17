@@ -24,7 +24,7 @@ insert_commend = '''
     INSERT INTO lexington (id, name, stock, sku, dims)
     VALUES (?, ?, ?, ?, ?)
 '''
-#cursor.execute(insert_commend,('1','antilles','Will be available 08-22-24', '566-144C', '80W x 87D x 64H in.'))
+cursor.execute(insert_commend,('2','arbor','In Stock', '714-144C', '83W x 90D x 74H in.'))
 
 # Make changes
 #conn.commit()

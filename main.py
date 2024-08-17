@@ -39,6 +39,16 @@ def extract_sizes_and_dimensions(soup):
             size_info.append((size_text, SKU, DIMS))
     return size_info
 
+def extra_dimensions(soup):
+    """Extracts additional dimensions information like Arm Depth etc."""
+    # Find all <span> tags, excluding those with class 'dimensions'
+    span_tags = [span for span in soup.find_all('span') if 'dimensions' not in span.get('class', [])]
+    extra_dims = []
+    # Print the text content of the filtered <span> tags
+    for span in span_tags:
+        extra_dims.append(span.get_text(strip=True))
+    return extra_dims
+
 def save_images(img_urls, download_dir):
     """Downloads images from the given list of URLs and saves them to the specified directory."""
     for img_url in img_urls:
@@ -101,12 +111,14 @@ def process_categories(product_links):
             stock = extract_text_by_class(soup, 'avail')
             sku = extract_text_by_class(soup, 'sku')
             sizes_and_dims = extract_sizes_and_dimensions(soup)
+            extra_dims = extra_dimensions(soup)
 
             # Save product data
             with open(os.path.join(product_dir, 'details.txt'), 'w') as f:
                 f.write(f"Dimensions: {dims}\n")
                 f.write(f"Stock: {stock}\n")
                 f.write(f"SKU: {sku}\n")
+                f.write(f"Extra Dimensions: {extra_dims}\n")
                 for size_text, SKU, DIMS in sizes_and_dims:
                     f.write(f"{size_text}: SKU: {SKU}, DIMS: {DIMS}\n")
 
