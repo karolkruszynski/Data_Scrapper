@@ -57,3 +57,10 @@ def create_tables():
 
     conn.commit()
     conn.close()
+
+def main():
+    conn = get_db_connection()
+    tables = create_tables()
+
+if __name__ == "__main__":
+    main()
