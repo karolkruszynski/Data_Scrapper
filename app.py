@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os
 from data_src import get_product_links
+from database import create_tables, get_db_connection
+
 
 def fetch_html(url):
     """Fetches and returns the HTML content from the given URL."""
@@ -10,9 +12,11 @@ def fetch_html(url):
     response.raise_for_status()  # Check for request errors
     return response.text
 
+
 def parse_html(html_content):
     """Parses the HTML content using BeautifulSoup."""
     return BeautifulSoup(html_content, 'html.parser')
+
 
 def extract_images(soup, base_url):
     """Extracts image URLs from the parsed HTML that do not have alt attributes."""
@@ -20,10 +24,12 @@ def extract_images(soup, base_url):
     img_urls = [urljoin(base_url, img['src']) for img in img_tags if 'src' in img.attrs]
     return img_urls
 
+
 def extract_text_by_class(soup, class_name):
     """Extracts and returns the text of a specific span class."""
     element = soup.find('span', class_=class_name)
     return element.get_text(strip=True) if element else None
+
 
 def extract_sizes_and_dimensions(soup):
     """Extracts sizes and dimensions from h3 tags with the class 'showPrint'."""
@@ -39,6 +45,7 @@ def extract_sizes_and_dimensions(soup):
             size_info.append((size_text, SKU, DIMS))
     return size_info
 
+
 def extra_dimensions(soup):
     """Extracts additional dimensions information like Arm Depth etc."""
     # Find all <span> tags, excluding those with class 'dimensions'
@@ -51,6 +58,7 @@ def extra_dimensions(soup):
         strip_key = key.get_text(strip=True)
         full_data[strip_key] = value.get_text(strip=True)
     return full_data
+
 
 def save_images(img_urls, download_dir):
     """Downloads images from the given list of URLs and saves them to the specified directory."""
@@ -86,6 +94,7 @@ def save_images(img_urls, download_dir):
 
 
 def process_categories(product_links):
+    from models import insert_products_with_attributes_and_other_ver
     """Processes product links for all categories and saves data."""
     base_url = 'https://www.lexington.com'
 
@@ -116,6 +125,16 @@ def process_categories(product_links):
             sizes_and_dims = extract_sizes_and_dimensions(soup)
             extra_dims = extra_dimensions(soup)
 
+            # Insert data into database
+            insert_products_with_attributes_and_other_ver(
+                name=product_name,
+                sku=sku,
+                stock=stock,
+                dimensions=dims,
+                extra_dims=extra_dims,
+                sizes_and_dims=sizes_and_dims
+            )
+
             # Save product data
             with open(os.path.join(product_dir, 'details.txt'), 'w') as f:
                 f.write(f"Dimensions: {dims}\n")
@@ -133,6 +152,8 @@ def process_categories(product_links):
 
 
 def main():
+    # Initialize database and create tables
+    create_tables()
     # Assume this function returns a dictionary of product links by category
     product_links = get_product_links()
 
